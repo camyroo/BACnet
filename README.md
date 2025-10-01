@@ -45,23 +45,35 @@ A real-time messaging platform featuring servers, channels, direct messages, and
 - Docker & Docker Compose
 - PostgreSQL
 
-### Installation
+### Usage
 ```bash
-# Clone repository
-git clone <repo-url>
-cd bacnet-social
 
-# Install dependencies
-npm install
-
-# Set up environment variables
-cp .env.example .env.local
-
-# Start with Docker
+# 1. Start database
+cd ..
 docker-compose up -d
 
-# Run database migrations
-npx prisma migrate dev
+# 2. Run servers (need TWO terminals)
+# Terminal 1:
+cd backend && npm run dev
 
-# Start development servers
-npm run dev
+# Terminal 2:
+cd frontend && npm run dev
+```
+
+### Installation
+```bash
+# 1. Clone
+git clone git@github.com:camyroo/BACnet.git
+cd BACnet
+
+# 2. Install (two separate directories)
+cd backend && npm install
+cd ../frontend && npm install
+
+# 3. Environment setup
+cd ../backend
+cp .env.example .env
+# Generate JWT_SECRET and add to .env
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+```
