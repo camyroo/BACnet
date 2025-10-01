@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import prisma from '../db';
 
+// this is the controller for user 
+
+// Create new user
 export const createUser = async (req: Request, res: Response) => {
   try {
     const { email, username } = req.body;
@@ -18,6 +21,7 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
+// Get all users
 export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany();
