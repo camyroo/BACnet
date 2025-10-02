@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import { createUser, getUsers } from '../controllers/userController';
 
+//part of express.js
 //routes map URLs to controller functions
+
 
 const router = Router();
 
