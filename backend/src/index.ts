@@ -16,7 +16,7 @@ app.get('/api/health', (req, res) => {
 });
 
 
-// All routes will be /api/users
+// All userRoutes will be /api
 app.use('/api', userRoutes);
 
 app.listen(PORT, () => {

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 //  TypeScript definition matching your Prisma model
 //  State variables: variables that trigger re-renders when changed
-interface User { 
+interface User {
   id: string;
   email: string;
   username: string;
@@ -72,11 +72,11 @@ export default function Home() {
   return (
     <div>
       <h1>BACnet Test</h1>
-      {error && <p>Error: {error}</p>}        
+      {error && <p>Error: {error}</p>}
       {message && <p>Backend: {message}</p>}
 
       <h1>Users</h1>
-      
+
       {/* Form to create new user */}
       <form onSubmit={createUser}>
         <input
@@ -96,15 +96,32 @@ export default function Home() {
         <button type="submit">Create User</button>
       </form>
 
-      {/* List all users */}
-      <h2>All Users</h2>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>
-            {user.username} - {user.email}
-          </li>
-        ))}
-      </ul>
+      <table className="relative overflow-x-auto">
+        <thead>
+          <tr className="text-left bg-gray-700">
+            <th className="px-2">Id</th>
+            <th className="px-2">Email</th>
+            <th className="px-2">Username</th>
+            <th className="px-2">Discriminator</th>
+            <th className="px-2">Created At</th>
+            <th className="px-2">Sub Tier</th>
+            <th className="px-2">Servers</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr key={user.id}>
+              <td className="px-2">{user.id}</td>
+              <td className="px-2">{user.email}</td>
+              <td className="px-2">{user.username}</td>
+              <td className="px-2">{user.discriminator}</td>
+              <td className="px-2">{user.createdAt}</td>
+              <td className="px-2">{user.subTier}</td>
+              <td className="px-2">{user.servers?.map(s => s.name).join(', ') || "No Servers"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
