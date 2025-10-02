@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react';
 
-interface User {
+//  TypeScript definition matching your Prisma model
+//  State variables: variables that trigger re-renders when changed
+interface User { 
   id: string;
   email: string;
   username: string;
@@ -16,27 +18,47 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
 
+
+  // Fetching users via get request
+  // 1. Makes a get request to /api/users backend
+  // 2. Converts response to JSON
+  // 3. Updates the users state with the data
+  // 4. when users updates, component re-renders
+
   const fetchUsers = async () => {
     const res = await fetch('http://localhost:3001/api/users');
     const data = await res.json();
     setUsers(data);
   };
 
+  // Creating a user via POST request
+  // 1. Prevents default form submission
+  // 2. Sends POST request with email and username to backend
+  // 3. Clears the form inputs
+  // 4. Fethces updated user list which re-renders state vars
+
   const createUser = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // stop form from refreshing the page
+
     await fetch('http://localhost:3001/api/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, username }),
+      body: JSON.stringify({ email, username }), //send form data
     });
-    setEmail('');
-    setUsername('');
-    fetchUsers();
+
+    setEmail('');     //clear form
+    setUsername('');  //
+    fetchUsers();     // refresh user list
   };
 
+  // On component load
+  // 1. Runs automatically when page first loads
+  // 2. Fetches all users in state vars
+  // 3. checks if backend is running
   useEffect(() => {
-    fetchUsers();
+    fetchUsers(); // get all usesrs when page loads
 
+    //test backend connection
     fetch('http://localhost:3001/api/health')
       .then(res => res.json())
       .then(data => {
@@ -50,11 +72,12 @@ export default function Home() {
   return (
     <div>
       <h1>BACnet Test</h1>
-      {error && <p>Error: {error}</p>}
+      {error && <p>Error: {error}</p>}        
       {message && <p>Backend: {message}</p>}
 
       <h1>Users</h1>
       
+      {/* Form to create new user */}
       <form onSubmit={createUser}>
         <input
           type="email"
@@ -73,6 +96,7 @@ export default function Home() {
         <button type="submit">Create User</button>
       </form>
 
+      {/* List all users */}
       <h2>All Users</h2>
       <ul>
         {users.map((user) => (

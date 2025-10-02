@@ -15,6 +15,8 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
 });
 
+
+// All routes will be /api/users
 app.use('/api', userRoutes);
 
 app.listen(PORT, () => {

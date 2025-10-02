@@ -40,7 +40,7 @@ POST http://localhost:3001     → userController.createUser()
    body: {email, username}        → returns new user
 ```
 
-## Rememeber this
+## Remember this
 
 - **State** = Variables that cause re-renders when changed
 - **useEffect** = Run code when component loads
