@@ -2,15 +2,18 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
+    container_name: bacnet_db
+    restart: always
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: cam
+      POSTGRES_PASSWORD: password123
       POSTGRES_DB: bacnet
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./001_create_users_table.sql:/docker-entrypoint-initdb.d/001_create_users_table.sql
 
 volumes:
   postgres_data:

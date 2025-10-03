@@ -1,11 +1,15 @@
-import { PrismaClient } from '../generated/prisma';
+import dotenv from 'dotenv';
+import { Pool } from 'pg';
 
-// part of prisma db - source of truth 
-// this creates an instance of primsa client that we need to import everywhere. 
-// This is the connction to db. 
+dotenv.config();
 
-// usually we shouldn't need to touch this again. 
+const pool = new Pool({
+  host: process.env.POSTGRES_HOST || 'localhost',
+  port: +(process.env.POSTGRES_PORT || 5432),
+  database: process.env.POSTGRES_DB,
+  user: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+});
 
-const prisma = new PrismaClient();
-
-export default prisma; 
+export const query = (text: string, params?: any[]) => pool.query(text, params);
+export { pool };
