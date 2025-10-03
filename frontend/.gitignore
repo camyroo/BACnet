@@ -1,41 +1,58 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+# Testing
+coverage/
 
-# testing
-/coverage
+# Next.js
+frontend/.next/
+frontend/out/
+.next/
+out/
 
-# next.js
-/.next/
-/out/
+# Production
+build/
+dist/
 
-# production
-/build
+# Environment variables
+.env
+.env*.local
+backend/.env
+frontend/.env
 
-# misc
-.DS_Store
-*.pem
-
-# debug
+# Debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# OS
+.DS_Store
+*.pem
+Thumbs.db
 
-# vercel
-.vercel
+# Docker
+docker-compose.override.yml
+*.log
 
-# typescript
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Prisma (if you ever use it again)
+prisma/migrations/
+generated/
+
+# Misc
+*.orig
+.cache/
