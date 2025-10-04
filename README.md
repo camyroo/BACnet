@@ -7,20 +7,17 @@ A real-time messaging platform featuring servers, channels, direct messages, and
 **Frontend**
 - Next.js 14+ (App Router)
 - TypeScript
-- Tailwind CSS
+- MUII
 - NextAuth.js (Google OAuth)
 
 **Backend**
 - Express.js
 - Socket.io (Real-time communication)
-- Prisma ORM
 - PostgreSQL
 
 **Infrastructure**
 - Docker
 - AWS S3 / Cloudinary (File storage)
-- Vercel (Frontend hosting)
-- Railway (Backend hosting)
 
 **Additional**
 - WebRTC (Voice chat)
@@ -77,3 +74,4 @@ cp .env.example .env
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 ```
+
