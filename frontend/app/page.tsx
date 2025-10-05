@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Container,
   Typography,
@@ -18,10 +18,12 @@ import {
   Stack
 } from '@mui/material';
 
+
 interface User {
-  id: number;
+  id: string;
   email: string;
   name: string;
+  discriminator: string;
   created_at: string;
   updated_at: string;
   subscription_tier: string;
@@ -47,6 +49,24 @@ export default function Home() {
     setFormData({ email: '', name: '' });
   };
 
+  const deleteUser = async (userId: string) => {
+    console.log("Remove User, Id: " + userId);
+    try {
+      const response = await fetch(`http://localhost:3001/api/users/${userId}`, { 
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete user, ID: ' + userId);
+      }
+
+      setUsers(users.filter(user => user.id !== userId));
+
+    } catch (err: any) {
+      setError('Failed to delete user: ' + err.message);
+    }
+  };
+
   const fetchUsers = async () => {
     try {
       const response = await fetch('http://localhost:3001/api/users');
@@ -59,7 +79,7 @@ export default function Home() {
 
   const createUser = async (email: string, name: string) => {
     try {
-      const response = await fetch('http://localhost:3001/api/createUser', {
+      const response = await fetch('http://localhost:3001/api/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -140,6 +160,8 @@ export default function Home() {
           </Button>
         </Box>
       </Box>
+
+
       {/* Users Table */}
       <Box sx={{ mt: 4 }}>
         <Typography variant="h5" gutterBottom>
@@ -156,6 +178,8 @@ export default function Home() {
                 <TableCell>Discriminator</TableCell>
                 <TableCell>Subscription</TableCell>
                 <TableCell>Created At</TableCell>
+                <TableCell>Delete</TableCell>
+
               </TableRow>
             </TableHead>
             <TableBody>
@@ -168,6 +192,11 @@ export default function Home() {
                   <TableCell>{user.subscription_tier}</TableCell>
                   <TableCell>
                     {new Date(user.created_at).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    <Button onClick={() => deleteUser(user.id)}>
+                      remove
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

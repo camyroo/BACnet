@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getUsers, createUser } from '../controllers/userController'
+import { getUsers, createUser, deleteUserId } from '../controllers/userController'
 
 //part of express.js
 //routes map URLs to controller functions
@@ -7,6 +7,7 @@ import { getUsers, createUser } from '../controllers/userController'
 const router = Router();
 
 router.get('/users', getUsers);
-router.post('/createUser', createUser);
+router.post('/users', createUser)
+router.delete('/users/:id', deleteUserId)
 
 export default router;
