@@ -33,12 +33,75 @@ interface User {
   subscription_tier: string;
 }
 
+const API_BASE_URL = 'http://localhost:3001/api';
 
 export default function Home() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [users, setUsers] = useState<User[]>([]);
   const [formData, setFormData] = useState({ email: '', name: '' });
+  const [filterType, setFilterType] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Api calls
+
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users`);
+      if (!response.ok) throw new Error('Failed to fetch users');
+
+      const data = await response.json();
+      setUsers(data);
+      setError('');
+    } catch (err: any) {
+      setError('Failed to fetch users: ' + err.message);
+    }
+  };
+
+  const createUser = async (email: string, name: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name }),
+      });
+
+      if (!response.ok) throw new Error('Failed to create user');
+
+      const newUser = await response.json();
+      setUsers([...users, newUser]);
+      setError('');
+    } catch (err: any) {
+      setError('Failed to create user: ' + err.message);
+    }
+  };
+
+  const deleteUser = async (userId: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to delete user');
+
+      setUsers(users.filter(user => user.id !== userId));
+      setError('');
+    } catch (err: any) {
+      setError('Failed to delete user: ' + err.message);
+    }
+  };
+
+  const checkHealth = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/health`);
+      const data = await response.json();
+      setMessage(data.message);
+    } catch (err: any) {
+      setError('Failed to connect: ' + err.message);
+    }
+  };
+
+  // Event handlers
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -53,70 +116,37 @@ export default function Home() {
     setFormData({ email: '', name: '' });
   };
 
-  const deleteUser = async (userId: string) => {
-    console.log("Remove User, Id: " + userId);
-    try {
-      const response = await fetch(`http://localhost:3001/api/users/${userId}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete user, ID: ' + userId);
-      }
-
-      setUsers(users.filter(user => user.id !== userId));
-
-    } catch (err: any) {
-      setError('Failed to delete user: ' + err.message);
-    }
+  const handleFilterChange = (value: string) => {
+    setFilterType(value);
   };
 
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/api/users');
-      const data = await response.json();
-      setUsers(data);
-    } catch (err: any) {
-      setError('Failed to fetch users: ' + err.message)
-    }
-  }
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
-  const createUser = async (email: string, name: string) => {
-    try {
-      const response = await fetch('http://localhost:3001/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, name }),
-      });
+  const getFilteredUsers = () => {
+    if (!searchQuery || !filterType) return users;
 
-      if (!response.ok) {
-        throw new Error('Failed to create user');
+    return users.filter(user => {
+      const searchLower = searchQuery.toLowerCase();
+
+      switch (filterType) {
+        case 'id':
+          return user.id.toLowerCase().includes(searchLower);
+        case 'email':
+          return user.email.toLowerCase().includes(searchLower);
+        case 'name':
+          return user.name.toLowerCase().includes(searchLower);
+        default:
+          return true;
       }
-
-      const newUser = await response.json();
-
-      setUsers([...users, newUser])
-
-
-    } catch (err: any) {
-      setError('Failed to crete user:' + err.message)
-    }
-  }
+    });
+  };
 
 
   useEffect(() => {
     fetchUsers();
-
-    fetch('http://localhost:3001/api/health')
-      .then(res => res.json())
-      .then(data => {
-        setMessage(data.message);
-      })
-      .catch(err => {
-        setError('Failed to connect: ' + err.message);
-      });
+    checkHealth();
   }, []);
 
   return (
@@ -168,9 +198,36 @@ export default function Home() {
 
       {/* Users Table */}
       <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Users
-        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h5">
+            Users
+          </Typography>
+
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <FormControl variant='standard' sx={{ minWidth: 120 }}>
+              <InputLabel>Filter</InputLabel>
+              <Select
+                value={filterType}
+                onChange={(e) => handleFilterChange(e.target.value)}
+                label="Filter By"
+              >
+                <MenuItem value=""><em>None</em></MenuItem>
+                <MenuItem value="id">ID</MenuItem>
+                <MenuItem value="email">Email</MenuItem>
+                <MenuItem value="name">Name</MenuItem>
+              </Select>
+
+            </FormControl>
+
+            <TextField
+              label="Search"
+              variant="standard"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              disabled={!filterType}
+            />
+          </Box>
+        </Box>
 
         <TableContainer component={Paper}>
           <Table>
@@ -208,6 +265,9 @@ export default function Home() {
           </Table>
         </TableContainer>
       </Box>
+
+
+
 
 
       <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>

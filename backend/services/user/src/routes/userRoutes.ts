@@ -1,13 +1,18 @@
 import { Router } from 'express';
-import { getUsers, createUser, deleteUserId } from '../controllers/userController';
+import * as user from '../controllers/userController';
 
 //part of express.js
 //routes map URLs to controller functions
 
 const router = Router();
 
-router.get('/users', getUsers);
-router.post('/users', createUser)
-router.delete('/users/:id', deleteUserId)
+router.get('/users', user.getUsers);
+router.get('/users/:id', user.getUserById);
+router.get('/users/:email', user.getUserByEmail)
+
+router.put('/users/:id', user.updateUserById)
+router.patch('/users/:status', user.updateUserStatus)
+router.post('/users', user.createUser)
+router.delete('/users/:id', user.deleteUserId)
 
 export default router;
