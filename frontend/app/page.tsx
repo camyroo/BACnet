@@ -15,7 +15,11 @@ import {
   Paper,
   Box,
   Alert,
-  Stack
+  Stack,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel
 } from '@mui/material';
 
 
@@ -52,7 +56,7 @@ export default function Home() {
   const deleteUser = async (userId: string) => {
     console.log("Remove User, Id: " + userId);
     try {
-      const response = await fetch(`http://localhost:3001/api/users/${userId}`, { 
+      const response = await fetch(`http://localhost:3001/api/users/${userId}`, {
         method: 'DELETE',
       });
 
@@ -204,6 +208,26 @@ export default function Home() {
           </Table>
         </TableContainer>
       </Box>
+
+
+      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="demo-simple-select-standard-label">Select User</InputLabel>
+        <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          label="Select User"
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          {users.map((user) => (
+            <MenuItem key={user.id} value={user.id}>
+              {user.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
     </Container>
   );
 }
